@@ -20,7 +20,7 @@ canvas.height = boardHeight;
 let fillRatio = .75;
 let selected = [-1, -1];
 let draggedCoords = [0, 0];
-let possibleMoves;
+let possibleMoves = [];
 let pieceImages = {
     BR: new Image(),
     BN: new Image(),
@@ -71,6 +71,21 @@ function draw() {
 
         }
     }
+
+    // draw possible moves
+    if(possibleMoves != undefined && possibleMoves.length > 0){
+        possibleMoves.forEach(pMove => {
+            if(!pMove[2]){
+                console.log("ay")
+                ctx.fillStyle = "green"; 
+                ctx.fillRect((boardWidth / xDim) * pMove[0] + boardWidth / xDim * ((1 - fillRatio) / 2), (boardHeight / yDim) * pMove[1] + boardHeight / yDim * ((1 - fillRatio) / 2), boardWidth / xDim * fillRatio, boardHeight / yDim * fillRatio)
+    
+            }
+    
+        })
+    }
+    
+
     // Draw peices
     for (let h = 0; h < yDim; h++) {
 
@@ -83,14 +98,13 @@ function draw() {
 
 
             } else if (dragging && selected[0] == w && selected[1] == h) {
-                console.log(dragging);
                 ctx.drawImage(pieceImages[board[h][w]], draggedCoords[0] - boardWidth / xDim * ((1 - fillRatio)) * 2, draggedCoords[1] - boardHeight / yDim * ((1 - fillRatio)) * 2, boardWidth / xDim * fillRatio, boardHeight / yDim * fillRatio)
 
             }
         }
     }
 
-
+    
 }
 
 function drawPeiceOnMouse(canvas, event) {
@@ -110,6 +124,17 @@ function selectPiece(canvas, event) {
         selected = [xSquare, ySquare]
         draggedCoords[0] = x;
         draggedCoords[1] = y;
+
+        if(board[ySquare][xSquare][1] == "R"){
+            possibleMoves = rookCalc(board, xSquare, ySquare, board[ySquare][xSquare][0])
+            
+        }else{
+            possibleMoves = [];
+        }
+    }else{
+        selected =  [-1, -1];
+        possibleMoves = [];
+
     }
 }
 
