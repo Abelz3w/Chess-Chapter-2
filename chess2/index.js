@@ -4,17 +4,22 @@ canvas.addEventListener('mousedown', function(e) {
     selectPiece(canvas, e)
 })
 document.addEventListener('mousemove', function(e) {
-    getCursorPosition(canvas, e)
+    checkHover(canvas, e)
+})
+document.addEventListener('mouseup', function(e) {
+    placeDraggedPeice(canvas, e)
 })
 let xDim = 8;
 let yDim = 8;
 let boardHeight = 500;
 let boardWidth = 500;
 let turn = "W"
+let dragging = false;
 canvas.width = boardWidth;
 canvas.height = boardHeight;
 let fillRatio = .75;
 let selected = [-1, -1];
+let draggedCoords = [0, 0];
 let possibleMoves;
 let pieceImages = {
     BR: new Image(),
@@ -63,15 +68,34 @@ function draw() {
 
 
             ctx.fillRect((boardWidth / xDim) * w, (boardHeight / yDim) * h, boardWidth / xDim, boardHeight / yDim);
-            if (selected[0] != h && selected[1] != w && board[h][w][0] != " ") {
+
+        }
+    }
+    // Draw peices
+    for (let h = 0; h < yDim; h++) {
+
+        for (let w = 0; w < xDim; w++) {
+            if (!(dragging && selected[0] == w && selected[1] == h) && board[h][w][0] != " " && board[h][w][0] != "X") {
                 ctx.drawImage(pieceImages[board[h][w]], (boardWidth / xDim) * w + boardWidth / xDim * ((1 - fillRatio) / 2), (boardHeight / yDim) * h + boardHeight / yDim * ((1 - fillRatio) / 2), boardWidth / xDim * fillRatio, boardHeight / yDim * fillRatio)
+            } else if (board[h][w][0] == "X") {
+                ctx.fillStyle = "#000000";
+                ctx.fillRect((boardWidth / xDim) * w, (boardHeight / yDim) * h, boardWidth / xDim, boardHeight / yDim);
+
+
+            } else if (dragging && selected[0] == w && selected[1] == h) {
+                console.log(dragging);
+                ctx.drawImage(pieceImages[board[h][w]], draggedCoords[0] - boardWidth / xDim * ((1 - fillRatio)) * 2, draggedCoords[1] - boardHeight / yDim * ((1 - fillRatio)) * 2, boardWidth / xDim * fillRatio, boardHeight / yDim * fillRatio)
+
             }
         }
     }
 
+
 }
 
-function holdingPeice
+function drawPeiceOnMouse(canvas, event) {
+
+}
 
 function selectPiece(canvas, event) {
     const rect = canvas.getBoundingClientRect();
@@ -81,7 +105,12 @@ function selectPiece(canvas, event) {
     let xSquare = Math.floor((x / boardWidth) * xDim);
     let ySquare = Math.floor((y / boardHeight) * yDim);
 
-    console.log("x: " + xSquare + " y: " + ySquare)
+    if (board[ySquare][xSquare][0] != " " && board[ySquare][xSquare][0] != "X") {
+        dragging = true;
+        selected = [xSquare, ySquare]
+        draggedCoords[0] = x;
+        draggedCoords[1] = y;
+    }
 }
 
 function checkHover(canvas, event) {
@@ -91,8 +120,27 @@ function checkHover(canvas, event) {
 
     let xSquare = Math.floor((x / boardWidth) * xDim);
     let ySquare = Math.floor((y / boardHeight) * yDim);
-
-    console.log("x: " + xSquare + " y: " + ySquare)
+    if (dragging) {
+        draggedCoords[0] = x;
+        draggedCoords[1] = y;
+    }
+    if (!(0 <= xSquare && xSquare < xDim) || !(0 <= ySquare && ySquare < yDim)) {
+        return false;
+    }
+    if (board[ySquare][xSquare][0] != " " && board[ySquare][xSquare][0] != "X") {
+        document.getElementsByTagName("body")[0].style.cursor = 'grab';
+    } else {
+        document.getElementsByTagName("body")[0].style.cursor = 'auto';
+    }
 }
 
-setInterval(draw, 500);
+function placeDraggedPeice(canvas, event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    let xSquare = Math.floor((x / boardWidth) * xDim);
+    let ySquare = Math.floor((y / boardHeight) * yDim);
+    dragging = false
+}
+setInterval(draw, 10);
