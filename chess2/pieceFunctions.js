@@ -1,14 +1,5 @@
 // Returns the possible moves given the board and position
-let board = [
-    ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
-    ["BP", "BP", "BP", "BP", "BP", "  ", "BP", "BP"],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "WP", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "WP", "WR", "  ", "  ", "BP", "  ", "  "],
-    ["  ", "  ", "WP", "  ", "  ", "  ", "  ", "  "],
-    ["WP", "  ", "  ", "  ", "WP", "WP", "WP", "WP"],
-    ["WR", "WN", "  ", "WQ", "WK", "WB", "WN", "WR"],
-];
+
 
 function rookCalc(board, positionX, positionY, color) {
     // X, Y, Takeable
@@ -57,4 +48,3 @@ function rookCalc(board, positionX, positionY, color) {
 
     return possibleMoves;
 }
-console.log(rookCalc(board, 2, 4, "W"))
