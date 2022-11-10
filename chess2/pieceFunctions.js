@@ -10,7 +10,7 @@ let board = [
     ["WR", "WN", "  ", "WQ", "WK", "WB", "WN", "WR"],
 ];
 
-export function rookCalc(board, positionX, positionY, color) {
+function rookCalc(board, positionX, positionY, color) {
     // X, Y, Takeable
     let possibleMoves = [];
     // up
