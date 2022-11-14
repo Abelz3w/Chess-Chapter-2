@@ -17,15 +17,17 @@ let animationLocation = [];
 let animationNerf = [2, 2];
 
 
-let boardHeight = 500;
-let boardWidth = 500;
+let boardHeight = 800;
+let boardWidth = 800;
 let turn = "W"
 let dragging = false;
 canvas.width = boardWidth;
 canvas.height = boardHeight;
 let fillRatio = .75;
 let selected = [-1, -1];
-let turns = ["W", "B"]
+let turns = ["W", "W", "B", "B"]
+let turnIndex = 1;
+
 let draggedCoords = [0, 0];
 let possibleMoves = [];
 let lastMove = [0, 0, 0, 0, "  "];
@@ -56,37 +58,38 @@ pieceImages.WB.src = "images/Pieces/WB.png";
 pieceImages.WQ.src = "images/Pieces/WQ.png";
 pieceImages.WK.src = "images/Pieces/WK.png";
 pieceImages.WP.src = "images/Pieces/WP.png";
-// let board = [
-//     ["BR", "BN", "BB", "BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BB", "BN", "BR"],
-//     ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
-//     ["WR", "WN", "WB", "WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR", "WB", "WN", "WR"],
-// ];
-// let xDim = 14;
-// let yDim = 14;
-let xDim = 8;
-let yDim = 8;
-
 let board = [
-    ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
-    ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
-    ["WR", "WN", "WB", "WK", "", "WB", "WN", "WR"],
+    ["BR", "BN", "BB", "BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BB", "BN", "BR"],
+    ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "XX", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ",  "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
+    ["WR", "WN", "WB", "WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR", "WB", "WN", "WR"],
 ];
+let xDim = 14;
+let yDim = 14;
+// let xDim = 8;
+// let yDim = 8;
+
+// let board = [
+//     ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
+//     ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
+//     ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR"],
+// ];
+// checkmate #1 person cannot move without their king being in check while being in check
 
 // rook start, rook end, kingstart, king end, possible
 let typesOfCastles = [
@@ -105,7 +108,7 @@ function draw() {
     for (let h = 0; h < yDim; h++) {
 
         for (let w = 0; w < xDim; w++) {
-            if ((w % 2 == 0 && h % 2 == 0) || (w % 2 == 1 && h % 2 == 1)) ctx.fillStyle = "#922724";
+            if ((w % 2 == 0 && h % 2 == 1) || (w % 2 == 1 && h % 2 == 0)) ctx.fillStyle = "#922724";
             else ctx.fillStyle = "#F1D0AA";
 
 
@@ -340,8 +343,8 @@ function placeSelectedPeice(xSquare, ySquare, animate = false) {
                 }
                 lastMove = [selected[0], selected[1], xSquare, ySquare, board[selected[1]][selected[0]]]
 
-                turn = turns[(turns.indexOf(board[selected[1]][selected[0]][0]) + 1) % turns.length]
-
+                //turn = turns[(turns.indexOf(board[selected[1]][selected[0]][0]) + 1) % turns.length]
+                turn = turns[turnIndex++ % turns.length]
                 board[selected[1]][selected[0]] = "  ";
                 selected = [-1, -1];
                 possibleMoves = [];
