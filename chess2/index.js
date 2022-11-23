@@ -23,9 +23,9 @@ let turn = "W"
 let dragging = false;
 canvas.width = boardWidth;
 canvas.height = boardHeight;
-let fillRatio = .75;
+let fillRatio = 1;
 let selected = [-1, -1];
-let turns = ["W", "W", "B", "B"]
+let turns = ["W", "B"]
 let turnIndex = 1;
 
 let draggedCoords = [0, 0];
@@ -46,49 +46,49 @@ let pieceImages = {
     WP: new Image()
 }
 
-pieceImages.BR.src = "images/Pieces/BR.png";
-pieceImages.BN.src = "images/Pieces/BN.png";
-pieceImages.BB.src = "images/Pieces/BB.png";
-pieceImages.BQ.src = "images/Pieces/BQ.png";
-pieceImages.BK.src = "images/Pieces/BK.png";
-pieceImages.BP.src = "images/Pieces/BP.png";
-pieceImages.WR.src = "images/Pieces/WR.png";
-pieceImages.WN.src = "images/Pieces/WN.png";
-pieceImages.WB.src = "images/Pieces/WB.png";
-pieceImages.WQ.src = "images/Pieces/WQ.png";
-pieceImages.WK.src = "images/Pieces/WK.png";
-pieceImages.WP.src = "images/Pieces/WP.png";
-let board = [
-    ["BR", "BN", "BB", "BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BB", "BN", "BR"],
-    ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "XX", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ",  "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-    ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
-    ["WR", "WN", "WB", "WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR", "WB", "WN", "WR"],
-];
-let xDim = 14;
-let yDim = 14;
-// let xDim = 8;
-// let yDim = 8;
-
+pieceImages.BR.src = "images/Pieces/bR.svg";
+pieceImages.BN.src = "images/Pieces/bN.svg";
+pieceImages.BB.src = "images/Pieces/bB.svg";
+pieceImages.BQ.src = "images/Pieces/bQ.svg";
+pieceImages.BK.src = "images/Pieces/bK.svg";
+pieceImages.BP.src = "images/Pieces/bP.svg";
+pieceImages.WR.src = "images/Pieces/wR.svg";
+pieceImages.WN.src = "images/Pieces/wN.svg";
+pieceImages.WB.src = "images/Pieces/wB.svg";
+pieceImages.WQ.src = "images/Pieces/wQ.svg";
+pieceImages.WK.src = "images/Pieces/wK.svg";
+pieceImages.WP.src = "images/Pieces/wP.svg";
 // let board = [
-//     ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
-//     ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
-//     ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
-//     ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR"],
+//     ["BR", "BN", "BB", "BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BB", "BN", "BR"],
+//     ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+//     ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
+//     ["WR", "WN", "WB", "WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR", "WB", "WN", "WR"],
 // ];
+// let xDim = 14;
+// let yDim = 14;
+let xDim = 8;
+let yDim = 8;
+
+let board = [
+    ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
+    ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+    ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
+    ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR"],
+];
 // checkmate #1 person cannot move without their king being in check while being in check
 
 // rook start, rook end, kingstart, king end, possible
@@ -110,10 +110,7 @@ function draw() {
         for (let w = 0; w < xDim; w++) {
             if ((w % 2 == 0 && h % 2 == 1) || (w % 2 == 1 && h % 2 == 0)) ctx.fillStyle = "#922724";
             else ctx.fillStyle = "#F1D0AA";
-
-
             ctx.fillRect((boardWidth / xDim) * w, (boardHeight / yDim) * h, boardWidth / xDim, boardHeight / yDim);
-
         }
     }
 
@@ -159,7 +156,7 @@ function draw() {
     // Draw dragged/ animation
     if (selected != undefined && selected[0] != -1 && dragging) {
 
-        ctx.drawImage(pieceImages[board[selected[1]][selected[0]]], draggedCoords[0] - boardWidth / xDim * ((1 - fillRatio)) * 2, draggedCoords[1] - boardHeight / yDim * ((1 - fillRatio)) * 2, boardWidth / xDim * fillRatio, boardHeight / yDim * fillRatio)
+        ctx.drawImage(pieceImages[board[selected[1]][selected[0]]], draggedCoords[0] - boardWidth / xDim * ((1 - fillRatio)) * 2 - (boardWidth / xDim * fillRatio) / 2, draggedCoords[1] - boardHeight / yDim * ((1 - fillRatio)) * 2 - (boardHeight / yDim * fillRatio) / 2, boardWidth / xDim * fillRatio, boardHeight / yDim * fillRatio)
     } else if (animating) {
         let dy;
         let dx;
