@@ -226,7 +226,16 @@ function queenCalc(board, positionX, positionY, color, ignoreColor = false) {
     }
 }
 
-function kingCalc(board, positionX, positionY, color, ignoreColor = false) {
+function knookCalc(board, positionX, positionY, color, ignoreColor = false) {
+    if (!ignoreColor) {
+        return rookCalc(board, positionX, positionY, color).concat(knightCalc(board, positionX, positionY, color));
+    } else {
+        return rookCalc(board, positionX, positionY, color, true).concat(knightCalc(board, positionX, positionY, color, true));
+
+    }
+}
+
+function kingCalc(board, positionX, positionY, color, kc2, castles, ignoreColor = false) {
     let possibleMoves = [];
     if (color != board[positionY][positionX][0] && !ignoreColor) {
         return possibleMoves;
@@ -269,6 +278,11 @@ function kingCalc(board, positionX, positionY, color, ignoreColor = false) {
             possibleMoves.push([positionX + 1, positionY, board[positionY][positionX + 1][0] != " "]);
         }
     }
+    if (kc2) {
+        possibleMoves.forEach((pMove, i) => {
+            if (pMove[0] == 2 && pMove[1] == 6) possibleMoves.splice(i, 1)
+        })
+    }
 
     // clean up moves that put the king into check
     if (!ignoreColor) possibleMoves = putsKingInDanger(board, color, possibleMoves, positionX, positionY)
@@ -276,6 +290,11 @@ function kingCalc(board, positionX, positionY, color, ignoreColor = false) {
 
 
     return possibleMoves
+}
+
+
+function allowCastle(board, positionX, positionY, color, castles) {
+
 }
 
 function putsKingInDanger(board, color, movesToCheck, positionX, positionY) {
@@ -330,46 +349,58 @@ function putsKingInDanger(board, color, movesToCheck, positionX, positionY) {
 
 }
 
-function getEnemyMoves(board, color) {
-    let enemyControlledSquares = [];
+function getMoves(board, color) {
+    let movesTheyCanMake = []
     board.forEach((row, ySquare) => {
         row.forEach((piece, xSquare) => {
-            if (piece[0] != color && piece[0] != " ") {
+            if (piece[0] == color) {
                 if (piece[1] == "R") {
                     let eMoves = rookCalc(board, xSquare, ySquare, "[", true);
-                    enemyControlledSquares.push(...eMoves);
+                    movesTheyCanMake.push(...eMoves);
                 } else if (piece[1] == "P") {
                     if (piece[0] == "W") {
                         let eMoves = pawnCalc(board, xSquare, ySquare, "up", "[", [0, 0, 0, 0, "  "], false, true);
-                        enemyControlledSquares.push(...eMoves);
+                        movesTheyCanMake.push(...eMoves);
 
                     } else if (piece[0] == "B") {
                         let eMoves = pawnCalc(board, xSquare, ySquare, "down", "[", [0, 0, 0, 0, "  "], false, true);
-                        enemyControlledSquares.push(...eMoves);
+                        movesTheyCanMake.push(...eMoves);
 
                     }
                 } else if (piece[1] == "N") {
                     let eMoves = knightCalc(board, xSquare, ySquare, "[", true);
-                    enemyControlledSquares.push(...eMoves);
+                    movesTheyCanMake.push(...eMoves);
 
 
                 } else if (piece[1] == "B") {
                     let eMoves = bishopCalc(board, xSquare, ySquare, "[", true);
-                    enemyControlledSquares.push(...eMoves);
+                    movesTheyCanMake.push(...eMoves);
 
 
                 } else if (piece[1] == "Q") {
                     let eMoves = queenCalc(board, xSquare, ySquare, "[", true);
-                    enemyControlledSquares.push(...eMoves);
+                    movesTheyCanMake.push(...eMoves);
 
                 } else if (piece[1] == "K") {
-                    let eMoves = kingCalc(board, xSquare, ySquare, "[", true);
-                    enemyControlledSquares.push(...eMoves);
+                    let eMoves = kingCalc(board, xSquare, ySquare, "[", kingC2Rule, [], true);
+                    movesTheyCanMake.push(...eMoves);
+
+
+                } else if (piece[1] == "Ñ") {
+                    let eMoves = knookCalc(board, xSquare, ySquare, "[", true);
+                    movesTheyCanMake.push(...eMoves);
 
 
                 }
             }
         })
     })
+    return movesTheyCanMake
+}
+
+function getEnemyMoves(board, color) {
+    let picked = turns[(turnIndex) % turns.length];
+    let enemyControlledSquares = getMoves(board, picked);
+
     return enemyControlledSquares
 }
